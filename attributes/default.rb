@@ -25,7 +25,7 @@ default['opensmtpd'] = {
     'tables' => {
       'aliases' => {
         'path' => '/etc/aliases',
-        'type' => 'file',
+        'type' => 'db',
         'content' => {
           'postmaster' => 'root'
         }
