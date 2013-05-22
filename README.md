@@ -1,7 +1,7 @@
 OpenSMTPD Cookbook
 ==================
 
-Install and configure OpenSMTPD, the »*FREE* implementation of the server-side SMTP protocol as defined by RFC 5321, with some additional standard extensions. It allows ordinary machines to exchange e-mails with other systems speaking the SMTP protocol.«
+Install and configure OpenSMTPD, the »FREE implementation of the server-side SMTP protocol as defined by RFC 5321, with some additional standard extensions. It allows ordinary machines to exchange e-mails with other systems speaking the SMTP protocol.«
 
 Platform
 --------
