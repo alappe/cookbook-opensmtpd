@@ -1,0 +1,25 @@
+# This file is managed by Chef for <%= node['fqdn'] %> 
+#
+# This is the smtpd server system-wide configuration file.
+# See smtpd.conf(5) for more information
+
+<% node['opensmtpd']['smtpd.conf']['macros'].each do |key, value| %>
+<%= "#{key} = \"#{value}\"" %>
+<% end %>
+
+<%= "bounce-warn #{node['opensmtpd']['smtpd.conf']['bounce-warn']}" unless node['opensmtpd']['smtpd.conf']['bounce-warn'].nil? %>
+<%= "expire #{node['opensmtpd']['smtpd.conf']['expire']}" unless node['opensmtpd']['smtpd.conf']['expire'].nil? %>
+<%= "max-message-size #{node['opensmtpd']['smtpd.conf']['max-message-size']}" unless node['opensmtpd']['smtpd.conf']['max-message-size'].nil? %>
+
+<% node['opensmtpd']['smtpd.conf']['listen'].each do |entry| %>
+listen <%= entry %>
+<% end %>
+<% node['opensmtpd']['smtpd.conf']['tables'].each do |name, table| %>
+table <%= "#{name} #{table['type']}:#{table['path']}#{'.db' if table['type'] == 'db'}" %>
+<% end %>
+<% node['opensmtpd']['smtpd.conf']['reject'].each do |reject| %>
+reject <%= reject %>
+<% end %>
+<% node['opensmtpd']['smtpd.conf']['accept'].each do |accept| %>
+accept <%= accept %>
+<% end %>
