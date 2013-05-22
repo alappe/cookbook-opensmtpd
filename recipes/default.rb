@@ -88,10 +88,9 @@ node['opensmtpd']['smtpd.conf']['tables'].each do |name,table|
     )
   end
 
-  if table['type'] == 'db'
-    execute "makemap #{table['path']}" do
-      command "#{node['opensmtpd']['prefix']}/sbin/makemap #{table['path']}"
-    end
+  execute "makemap #{table['path']}" do
+    command "#{node['opensmtpd']['prefix']}/sbin/makemap #{table['path']}"
+    only_if { table['type'] == 'db' }
   end
 end
 
