@@ -80,7 +80,7 @@ end
 node['opensmtpd']['smtpd.conf']['tables'].each do |name,table|
   template table['path'] do
     source "table.erb"
-    mode 0644
+    mode 0640
     user "_smtpd"
     group "_smtpd"
     variables(
