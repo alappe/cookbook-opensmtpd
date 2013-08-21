@@ -52,7 +52,7 @@ end
 end
 
 # Dependencies:
-%w{libtool autoconf automake bison openssl libdb-dev libevent-dev}.each do |pkg|
+%w{libtool autoconf automake bison openssl libdb-dev libevent-dev zlib1g-dev libssl-dev}.each do |pkg|
   package pkg do
     action :install
   end
