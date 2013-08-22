@@ -9,6 +9,5 @@ Berksfile.lock
 .*.sw[a-z]
 *.un~
 /cookbooks
-Gemfile.lock
 bin/*
 .bundle/*
