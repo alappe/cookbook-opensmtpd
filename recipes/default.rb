@@ -24,17 +24,6 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-template "/etc/init/opensmtpd.conf" do
-  source "upstart.erb"
-  mode 0600
-end
-
-service 'opensmtpd' do
-  provider Chef::Provider::Service::Upstart
-  supports :start => true, :restart => true, :stop => true, :status => true
-  action :nothing
-end
-
 directory node['opensmtpd']['privsep']['empty_dir'] do
   action :create
   user "nobody"
@@ -99,9 +88,15 @@ template "#{node['opensmtpd']['config_dir']}/smtpd.conf" do
   user "_smtpd"
   group "_smtpd"
   mode 0644
-  notifies :reload, 'service[opensmtpd]', :delayed
+end
+
+template "/etc/init/opensmtpd.conf" do
+  source "upstart.erb"
+  mode 0600
 end
 
 service 'opensmtpd' do
+  provider Chef::Provider::Service::Upstart
+  supports :start => true, :restart => true, :stop => true, :status => true
   action [:enable, :start]
 end
