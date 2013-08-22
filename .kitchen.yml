@@ -7,7 +7,14 @@ platforms:
   # No need to detail more: https://github.com/opscode/kitchen-vagrant#-default-configuration
 - name: ubuntu-12.04
 
+  # for an unknow reason the debian 7 provided by opscode do not work for me, so I found an other one
+- name: debian-7.1.0
   driver_config:
+    provider: virtualbox
+    box: ffuenf-debian-7.1.0
+    box_url: https://s3-eu-west-1.amazonaws.com/ffuenf-vagrant-boxes/chef-11.6.0/debian-7.1.0-amd64.box
+  run_list: ["recipe[remove_exim4]"]
+
 #- name: ubuntu-10.04
 #  driver_config:
 #    box: opscode-ubuntu-10.04
@@ -23,5 +30,5 @@ platforms:
 
 suites:
 - name: default
-  run_list: ["recipe[git]","recipe[opensmtpd]"]
+  run_list: ["recipe[git]", "recipe[opensmtpd]"]
   attributes: {}
