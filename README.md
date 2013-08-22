@@ -9,6 +9,7 @@ Platform
 The following platform families are supported:
 
 * Debian
+* Ubuntu
 
 Requirements
 ------------
