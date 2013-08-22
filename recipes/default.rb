@@ -90,13 +90,35 @@ template "#{node['opensmtpd']['config_dir']}/smtpd.conf" do
   mode 0644
 end
 
-template "/etc/init/opensmtpd.conf" do
-  source "upstart.erb"
-  mode 0600
+# Setup the init script
+if platform?('ubuntu')
+  init_path = "/etc/init/opensmtpd.conf"
+  init_mode = 0600
+elsif platform?('debian')
+  init_path = "/etc/init.d/opensmtpd"
+  init_mode = 0755
 end
 
+template init_path do
+  source "opensmtpd.init.erb"
+  mode init_mode
+end
+
+if platform?('debian')
+  template "/etc/default/opensmtpd" do
+    source "opensmtpd.default.erb"
+    mode 0755
+  end
+end
+
+# Enable and launch the service
 service 'opensmtpd' do
-  provider Chef::Provider::Service::Upstart
+  if platform?('ubuntu')
+    provider Chef::Provider::Service::Upstart
+  elsif platform?('debian')
+    provider Chef::Provider::Service::Init::Debian
+  end
+
   supports :start => true, :restart => true, :stop => true, :status => true
   action [:enable, :start]
 end
