@@ -8,12 +8,12 @@
 #
 
 if platform? 'debian'
-  service "exim4" do
+  service 'exim4' do
     provider Chef::Provider::Service::Init::Debian
     action :stop
   end
 
-  package "exim4" do
+  package 'exim4' do
     action :remove
   end
 end

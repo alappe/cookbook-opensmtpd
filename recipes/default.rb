@@ -26,15 +26,15 @@
 
 directory node['opensmtpd']['privsep']['empty_dir'] do
   action :create
-  user "nobody"
-  group "nogroup"
+  user 'nobody'
+  group 'nogroup'
 end
 
 # Needed users:
 %w{_smtpd _smtpq _smtpf}.each do |user|
   user user do
     system true
-    comment "OpenSMTPD privilege separation user"
+    comment 'OpenSMTPD privilege separation user'
     shell node['opensmtpd']['privsep']['user_shell']
     home node['opensmtpd']['privsep']['empty_dir']
   end
@@ -53,25 +53,31 @@ git node['opensmtpd']['src_dir'] do
   action :checkout
 end
 
-execute "bootstrap OpenSMTPD" do
+execute 'bootstrap OpenSMTPD' do
   cwd node['opensmtpd']['src_dir']
-  command "./bootstrap"
+  command './bootstrap'
   not_if { ::File.exists?("#{node['opensmtpd']['src_dir']}/configure") }
 end
 
-execute "build OpenSMTPD" do
+execute 'build OpenSMTPD' do
   cwd node['opensmtpd']['src_dir']
-  command "./configure --prefix=#{node['opensmtpd']['prefix']} --sysconfdir=#{node['opensmtpd']['config_dir']} --with-mantype=doc && make && make install"
+  command <<-EOH
+  ./configure \
+    --prefix=#{node['opensmtpd']['prefix']}
+    --sysconfdir=#{node['opensmtpd']['config_dir']}
+    --with-mantype=doc \
+    && make && make install
+  EOH
   not_if { ::File.exists?("#{node['opensmtpd']['prefix']}/sbin/smtpd") }
 end
 
-# Create the configured files, if db also run makemap on them…
-node['opensmtpd']['smtpd.conf']['tables'].each do |name,table|
+# Create the configured files, if db also run makemap on them...
+node['opensmtpd']['smtpd.conf']['tables'].each do |name, table|
   template table['path'] do
-    source "table.erb"
+    source 'table.erb'
     mode 0644
-    user "_smtpd"
-    group "_smtpd"
+    user '_smtpd'
+    group '_smtpd'
     variables(
       'content' => table['content']
     )
@@ -84,31 +90,30 @@ node['opensmtpd']['smtpd.conf']['tables'].each do |name,table|
 end
 
 template "#{node['opensmtpd']['config_dir']}/smtpd.conf" do
-  source "smtpd.conf.erb"
-  user "_smtpd"
-  group "_smtpd"
+  source 'smtpd.conf.erb'
+  user '_smtpd'
+  group '_smtpd'
   mode 0644
 end
 
 # Setup the init script
 if platform?('ubuntu')
-  init_path = "/etc/init/opensmtpd.conf"
+  init_path = '/etc/init/opensmtpd.conf'
   init_mode = 0600
 elsif platform?('debian')
-  init_path = "/etc/init.d/opensmtpd"
+  init_path = '/etc/init.d/opensmtpd'
   init_mode = 0755
 end
 
 template init_path do
-  source "opensmtpd.init.erb"
+  source 'opensmtpd.init.erb'
   mode init_mode
 end
 
-if platform?('debian')
-  template "/etc/default/opensmtpd" do
-    source "opensmtpd.default.erb"
-    mode 0755
-  end
+template '/etc/default/opensmtpd' do
+  source 'opensmtpd.default.erb'
+  mode 0755
+  only_if { platform? 'debian' }
 end
 
 # Enable and launch the service
@@ -119,6 +124,6 @@ service 'opensmtpd' do
     provider Chef::Provider::Service::Init::Debian
   end
 
-  supports :start => true, :restart => true, :stop => true, :status => true
+  supports start: true, restart: true, stop: true, status: true
   action [:enable, :start]
 end
