@@ -7,5 +7,11 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.1.0'
 
 recipe "opensmtpd", "Installs OpenSMTPD from source"
-supports "ubuntu"
-depends "git"
+
+# Depend of
+depends 'git'
+
+# Supported OS
+%w{ ubuntu debian }.each do |os|
+  supports os
+end
