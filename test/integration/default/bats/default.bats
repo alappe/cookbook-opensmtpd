@@ -1,5 +1,13 @@
 #!/usr/bin/env bats
 
+@test "smtpd is installed and in the path" {
+     which smtpd
+}
+
+@test "smtpctl is installed and in the path" {
+     which smtpctl
+}
+
 @test "configuration should be written" {
   [ -e /etc/smtpd.conf ]
 }
